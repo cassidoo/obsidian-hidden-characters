@@ -1,15 +1,19 @@
-import { Plugin, PluginSettingTab, App, Setting, MarkdownView } from "obsidian";
+const Plugin = require("obsidian").Plugin;
+const PluginSettingTab = require("obsidian").PluginSettingTab;
+const App = require("obsidian").App;
+const Setting = require("obsidian").Setting;
+const MarkdownView = require("obsidian").MarkdownView;
 
 const LEFT_TO_RIGHT_OVERRIDE = "\u202d";
 const POP_DIRECTIONAL_FORMATTING = "\u202c";
 
 const DEFAULT_SETTINGS = {
 	enabled: true,
-	backgroundColor: "rgba(255, 0, 0, 0.3)",
+	backgroundColor: "rgba(255, 0, 0, 1)",
 	textColor: "black",
 };
 
-export default class HiddenCharactersPlugin extends Plugin {
+class HiddenCharactersPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
@@ -74,9 +78,9 @@ export default class HiddenCharactersPlugin extends Plugin {
 			return;
 		}
 
-		const content = view.file.content;
+		const content = view.data;
 		const hiddenUnicodeCount = (content.match(/[\u202d\u202c]/g) || []).length;
-		this.statusBar.setText(`Hidden Unicode Characters: ${hiddenUnicodeCount}`);
+		this.statusBar.setText(`${hiddenUnicodeCount} hidden characters`);
 	}
 
 	onunload() {
@@ -148,6 +152,8 @@ class HiddenCharactersSettingTab extends PluginSettingTab {
 			);
 	}
 }
+
+module.exports = HiddenCharactersPlugin;
 
 // TODO: Functions to write
 // - One to remove hidden characters in a file

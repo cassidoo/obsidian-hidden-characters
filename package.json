@@ -3,6 +3,7 @@
 	"version": "1.0.0",
 	"description": "An Obsidian plugin for showing and removing hidden characters in the editor.",
 	"main": "main.js",
+	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
