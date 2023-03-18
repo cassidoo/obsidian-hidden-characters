@@ -18,7 +18,10 @@ class HiddenCharactersPlugin extends Plugin {
 		await this.loadSettings();
 
 		this.registerCodeMirror((cm) => {
-			cm.setOption("specialChars", /[\u202d\u202c]/);
+			cm.setOption(
+				"specialChars",
+				/[\u202d\u202c]|&lrm;|&rlm;|&#x202D;|&#x202C;/
+			);
 			cm.setOption(
 				"specialCharPlaceholder",
 				this.specialCharPlaceholder.bind(this)
@@ -36,7 +39,10 @@ class HiddenCharactersPlugin extends Plugin {
 	refresh() {
 		if (this.settings.enabled) {
 			this.registerCodeMirror((cm) => {
-				cm.setOption("specialChars", /[\u202d\u202c]/);
+				cm.setOption(
+					"specialChars",
+					/[\u202d\u202c]|&lrm;|&rlm;|&#x202D;|&#x202C;/
+				);
 				cm.setOption(
 					"specialCharPlaceholder",
 					this.specialCharPlaceholder.bind(this)
@@ -51,13 +57,24 @@ class HiddenCharactersPlugin extends Plugin {
 	}
 
 	specialCharPlaceholder(ch) {
+		const decoded = this.decodeHtmlEntity(ch);
 		const span = document.createElement("span");
-		span.textContent = ch;
+		span.textContent = decoded;
 		span.title = this.getCharacterName(ch);
 		span.classList.add("hidden-unicode-character");
 		span.style.backgroundColor = this.settings.backgroundColor;
 		span.style.color = this.settings.textColor;
 		return span;
+	}
+
+	decodeHtmlEntity(str) {
+		if (str === "&lrm;" || str === "&#x202D;") {
+			return LEFT_TO_RIGHT_OVERRIDE;
+		} else if (str === "&rlm;" || str === "&#x202C;") {
+			return POP_DIRECTIONAL_FORMATTING;
+		} else {
+			return str;
+		}
 	}
 
 	getCharacterName(ch) {
