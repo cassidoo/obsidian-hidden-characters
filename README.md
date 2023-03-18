@@ -1,4 +1,3 @@
-Obsidian Hidden Characters
-==========================
+# Obsidian Hidden Characters
 
-A plugin for showing (and removing) hidden characters in Obsidian notes.
+A plugin for showing (and removing) hidden characters in the Obsidian editor.
