@@ -1,0 +1,15 @@
+{
+	"id": "obsidian-hidden-characters",
+	"name": "Obsidian Hidden Characters",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "An Obsidian plugin for showing and removing hidden characters in the editor.",
+	"author": "cassidoo",
+	"authorUrl": "https://cassidoo.co",
+	"fundingUrl": {
+		"GitHub Sponsors": "https://github.com/sponsors/cassidoo",
+		"Patreon": "https://www.patreon.com/cassidoo",
+		"Venmo": "https://venmo.com/cassidoo"
+	},
+	"isDesktopOnly": false
+}
