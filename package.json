@@ -24,6 +24,7 @@
 	},
 	"homepage": "https://github.com/cassidoo/obsidian-hidden-characters#readme",
 	"dependencies": {
+		"@codemirror/view": "^6.9.2",
 		"obsidian": "^1.1.1"
 	}
 }

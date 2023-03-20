@@ -17,16 +17,13 @@ class HiddenCharactersPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		this.registerCodeMirror((cm) => {
-			cm.setOption(
-				"specialChars",
-				/[\u202d\u202c]|&lrm;|&rlm;|&#x202D;|&#x202C;/
-			);
-			cm.setOption(
-				"specialCharPlaceholder",
-				this.specialCharPlaceholder.bind(this)
-			);
-		});
+		// this.registerEditorExtension([]);
+
+		// this.registerEvent(
+		// 	this.app.workspace.on("codemirror", (cm) => {
+		// 		this.highlightHiddenCharacters(cm);
+		// 	})
+		// );
 
 		this.statusBar = this.addStatusBarItem();
 		this.registerInterval(
@@ -36,24 +33,36 @@ class HiddenCharactersPlugin extends Plugin {
 		this.addSettingTab(new HiddenCharactersSettingTab(this.app, this));
 	}
 
-	refresh() {
-		if (this.settings.enabled) {
-			this.registerCodeMirror((cm) => {
-				cm.setOption(
-					"specialChars",
-					/[\u202d\u202c]|&lrm;|&rlm;|&#x202D;|&#x202C;/
-				);
-				cm.setOption(
-					"specialCharPlaceholder",
-					this.specialCharPlaceholder.bind(this)
-				);
-			});
-		} else {
-			this.app.workspace.iterateCodeMirrors((cm) => {
-				cm.setOption("specialChars", null);
-				cm.setOption("specialCharPlaceholder", null);
-			});
-		}
+	isLegacy() {
+		return this.app.vault.config?.legacyEditor;
+	}
+
+	// refresh() {
+	// 	if (this.settings.enabled) {
+	// 		this.registerEvent(
+	// 			this.app.workspace.on("codemirror", (cm) => {
+	// 				this.highlightHiddenCharacters(cm);
+	// 			})
+	// 		);
+	// 	}
+	// }
+
+	highlightHiddenCharacters(cm) {
+		const regex = new RegExp(/[\u202d\u202c]|&lrm;|&rlm;|&#x202D;|&#x202C;/);
+
+		cm.eachLine((line) => {
+			let match;
+
+			while ((match = regex.exec(line.text)) !== null) {
+				const from = { line: line.lineNo(), ch: match.index };
+				const to = { line: line.lineNo(), ch: match.index + 1 };
+
+				cm.markText(from, to, {
+					className: "hidden-unicode-character",
+					title: this.getCharacterName(match[0]),
+				});
+			}
+		});
 	}
 
 	specialCharPlaceholder(ch) {
@@ -101,10 +110,6 @@ class HiddenCharactersPlugin extends Plugin {
 	}
 
 	onunload() {
-		this.app.workspace.iterateCodeMirrors((cm) => {
-			cm.setOption("specialChars", null);
-			cm.setOption("specialCharPlaceholder", null);
-		});
 		this.statusBar.remove();
 	}
 
